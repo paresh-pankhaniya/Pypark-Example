@@ -1,5 +1,4 @@
 import sys
-import re
 from pyspark.sql import SparkSession
 
 if len(sys.argv) != 2:
@@ -7,9 +6,9 @@ if len(sys.argv) != 2:
     sys.exit(-1)
 
 spark = SparkSession.builder.appName("countAlphbets").getOrCreate()
-file = spark.read.text(sys.argv[1]).rdd.map(lambda x:x[0])
+texts = spark.read.text(sys.argv[1]).rdd.map(lambda x:x[0])
 
-chars = file.flatMap(lambda x:list(x))\
+chars = texts.flatMap(lambda x:list(x))\
             .filter(lambda x: x.isalnum())\
             .map(lambda x:(x,1))\
             .reduceByKey(lambda x,y:x+y)
